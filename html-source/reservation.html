@@ -119,6 +119,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
+      let attenction = Prompt();
+
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       (function() {
         'use strict';
@@ -139,7 +141,8 @@
       })();
 
       document.getElementById("testButton").addEventListener("click", function() {
-        notifyModal("Title", "Hello", "success", "My text for the button" )
+        // notifyModal("Title", "Hello", "success", "My text for the button" )
+        attenction.success({msg: "Hello,world"});
       })
 
 
@@ -158,6 +161,66 @@
           confirmButtonText: confirmButtonText
         })
       }
+
+      function Prompt() {
+        let toast = function(c) {
+          const {
+            msg = "",
+            icon = "success",
+            position = "top-end"
+          } = c;
+          const Toast = Swal.mixin({
+            toast: true,
+            title: msg,
+            position: position,
+            icon: icon,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+
+          Toast.fire({})
+        }
+
+        let success = function(c) {
+          const {
+            msg = "",
+            title = "",
+            footer = "",
+          } = c;
+          Swal.fire({
+            icon: 'success',
+            title: title,
+            text: msg,
+            footer: footer
+          })
+        }
+
+        let error = function(c) {
+          const {
+            msg = "",
+            title = "",
+            footer = "",
+          } = c;
+          Swal.fire({
+            icon: 'error',
+            title: title,
+            text: msg,
+            footer: footer
+          })
+        }
+
+        return {
+          toast: toast,
+          success: success,
+          error: error,
+        }
+      }
+
 
       </script>
   </body>
