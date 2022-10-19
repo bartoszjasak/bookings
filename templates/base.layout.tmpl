@@ -99,35 +99,6 @@
         }, false);
       })();
 
-      document.getElementById("testButton").addEventListener("click", function() {
-        let html = `
-          <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
-            <div class="form-row">
-              <div class="col">
-                <div class="form-row" id="reservation-dates-modal">
-                  <div class="col">
-                    <input disabled required class="form-control" type="text" name="start" id="start" placeholder="Arrival">
-                  </div>
-                  <div class="col">
-                    <input disabled required class="form-control" type="text" name="end" id="end" placeholder="Departure">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        `;
-        attenction.custom({
-            title: 'Choose your dates',
-            msg: html,
-          });
-      })
-
-      const elem = document.getElementById('reservation-dates');
-      const rangepicker = new DateRangePicker(elem, {
-        format: "yyyy-mm-dd",
-        orientation: "top-auto",
-      }); 
-
       function notify(msg, msgType) {
         notie.alert({
           type: msgType,
@@ -204,7 +175,7 @@
           const { value: formValues } = await Swal.fire({
             title: title,
             html: msg,
-            backdrop: false,
+            backdrop: true,
             focusConfirm: false,
             showCancelButton: true,
             willOpen: () => {
