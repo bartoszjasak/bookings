@@ -26,6 +26,7 @@ func routes(appConfig *config.AppConfig) http.Handler {
 	mux.Get("/contact", handlers.Repo.Contact)
 
 	mux.Get("/make-reservation", handlers.Repo.Reservation)
+	mux.Post("/make-reservation", handlers.Repo.PostReservation)
 
 	mux.Get("/favicon.ico", handlers.Repo.DoNothing)
 
