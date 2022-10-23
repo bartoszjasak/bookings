@@ -10,6 +10,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/bartoszjasak/bookings/internal/config"
+	"github.com/bartoszjasak/bookings/internal/driver"
 	"github.com/bartoszjasak/bookings/internal/handlers"
 	"github.com/bartoszjasak/bookings/internal/helpers"
 	"github.com/bartoszjasak/bookings/internal/models"
@@ -24,10 +25,11 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.SQL.Close()
 
 	fmt.Println(fmt.Sprintf("Starting an application on port %s", portNumber))
 
@@ -40,7 +42,7 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	gob.Register(models.Reservation{})
 
 	appConfig.InProduction = false
@@ -59,17 +61,24 @@ func run() error {
 	session.Cookie.Secure = appConfig.InProduction
 	appConfig.Session = session
 
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=postgres password=expert")
+	if err != nil {
+		log.Fatal("Cannot connect to database")
+	}
+	log.Println("Connected to database")
+
 	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
-		return err
+		return nil, err
 	}
 
 	appConfig.TemplateCatche = templateCache
 
-	repo := handlers.NewRepo(&appConfig)
+	repo := handlers.NewRepo(&appConfig, db)
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&appConfig)
 	helpers.NewHelpers(&appConfig)
-	return nil
+	return db, nil
 }
