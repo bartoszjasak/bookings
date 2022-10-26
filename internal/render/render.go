@@ -17,7 +17,7 @@ import (
 var appConfig *config.AppConfig
 var pathToTemplates = "./templates"
 
-func NewTemplates(a *config.AppConfig) {
+func NewRenderer(a *config.AppConfig) {
 	appConfig = a
 }
 
@@ -29,7 +29,7 @@ func AddDefaultData(templateData *models.TemplateData, r *http.Request) *models.
 	return templateData
 }
 
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmplName string, templateData *models.TemplateData) error {
+func Template(w http.ResponseWriter, r *http.Request, tmplName string, templateData *models.TemplateData) error {
 	var templateCache map[string]*template.Template
 	if appConfig.UseCache {
 		templateCache = appConfig.TemplateCatche

@@ -44,6 +44,9 @@ func main() {
 
 func run() (*driver.DB, error) {
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
 
 	appConfig.InProduction = false
 	appConfig.UseCache = false
@@ -78,7 +81,7 @@ func run() (*driver.DB, error) {
 
 	repo := handlers.NewRepo(&appConfig, db)
 	handlers.NewHandlers(repo)
-	render.NewTemplates(&appConfig)
+	render.NewRenderer(&appConfig)
 	helpers.NewHelpers(&appConfig)
 	return db, nil
 }
