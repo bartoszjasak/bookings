@@ -30,6 +30,9 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.SQL.Close()
+	defer close(appConfig.MailChan)
+	fmt.Println("Starting amail listener...")
+	listenForMail()
 
 	fmt.Println(fmt.Sprintf("Starting an application on port %s", portNumber))
 
@@ -47,6 +50,9 @@ func run() (*driver.DB, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+
+	mailChan := make(chan models.MailData)
+	appConfig.MailChan = mailChan
 
 	appConfig.InProduction = false
 	appConfig.UseCache = false
