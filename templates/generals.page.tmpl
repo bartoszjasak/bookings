@@ -43,7 +43,7 @@
         </div>
       </form>
     `;
-    attenction.custom({
+    attention.custom({
       msg: html,
       title: 'Choose your dates',
         willOpen: () => {
@@ -73,7 +73,7 @@
             .then(response => response.json())
             .then(data => {
               if (data.ok) {
-                attenction.custom({
+                attention.custom({
                   icon: 'success',
                   showConfirmButton: false,
                   msg: '<p>Room is available!</p>'
@@ -87,7 +87,7 @@
                      + 'Book now !</a></p>'
                 })
               } else  {
-                attenction.error({
+                attention.error({
                   msg: "No availability",
                 })
               }
