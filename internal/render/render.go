@@ -16,11 +16,27 @@ import (
 )
 
 var functions = template.FuncMap{
-	"humanDate": HumanDate,
+	"humanDate":  HumanDate,
+	"formatDate": FormatDate,
+	"iterate":    Iterate,
+	"add":        Add,
 }
 
 var appConfig *config.AppConfig
 var pathToTemplates = "./templates"
+
+func Iterate(count int) []int {
+	var i int
+	var items []int
+	for i = 0; i < count; i++ {
+		items = append(items, i)
+	}
+	return items
+}
+
+func Add(a, b int) int {
+	return a + b
+}
 
 func NewRenderer(a *config.AppConfig) {
 	appConfig = a
@@ -28,6 +44,10 @@ func NewRenderer(a *config.AppConfig) {
 
 func HumanDate(t time.Time) string {
 	return t.Format("2006-01-02")
+}
+
+func FormatDate(t time.Time, f string) string {
+	return t.Format(f)
 }
 
 func AddDefaultData(templateData *models.TemplateData, r *http.Request) *models.TemplateData {
@@ -73,6 +93,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", pathToTemplates))
 	if err != nil {
+		log.Fatal(err)
 		return templateCache, err
 	}
 
@@ -80,17 +101,20 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		name := filepath.Base(page)
 		template, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
+			log.Fatal(err)
 			return templateCache, err
 		}
 
 		layouts, err := filepath.Glob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemplates))
 		if err != nil {
+			log.Fatal(err)
 			return templateCache, err
 		}
 
 		if len(layouts) > 0 {
 			template, err = template.ParseGlob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemplates))
 			if err != nil {
+				log.Fatal(err)
 				return templateCache, err
 			}
 		}
